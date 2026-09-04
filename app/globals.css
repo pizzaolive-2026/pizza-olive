@@ -300,6 +300,74 @@ a {
   text-transform: capitalize;
 }
 
+/* ---------- Category Showcase (bento grid) ---------- */
+
+.category-showcase {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 4px;
+}
+
+.category-showcase__grid {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  grid-template-rows: 400px 320px;
+  grid-template-areas:
+    "pasta arancini"
+    "pizza1 pizza2";
+  gap: 6px;
+}
+
+.category-showcase__item {
+  position: relative;
+  overflow: hidden;
+  display: block;
+}
+
+.category-showcase__item--pasta   { grid-area: pasta; }
+.category-showcase__item--arancini { grid-area: arancini; }
+.category-showcase__item--pizza1  { grid-area: pizza1; }
+.category-showcase__item--pizza2  { grid-area: pizza2; }
+
+.category-showcase__item img {
+  transition: transform 0.4s ease;
+}
+
+.category-showcase__item:hover img {
+  transform: scale(1.05);
+}
+
+.category-showcase__btn {
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-brand-red);
+  color: #fff;
+  padding: 10px 28px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  z-index: 2;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .category-showcase__grid {
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 280px 240px;
+    grid-template-areas:
+      "pasta arancini"
+      "pizza1 pizza2";
+  }
+  .category-showcase__btn {
+    padding: 8px 18px;
+    font-size: 0.75rem;
+  }
+}
+
 /* ---------- Category nav (mobile browsing fix) ---------- */
 
 .category-nav {
