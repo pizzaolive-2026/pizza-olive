@@ -3,7 +3,6 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { categories, getProductsByCategory } from "@/data/products";
 import MenuBrowser from "@/components/MenuBrowser";
-import CategoryShowcase from "@/components/CategoryShowcase";
 
 export const metadata: Metadata = {
   title: "Pizza Olive – Authentic Italian Pizza & Pasta",
@@ -45,18 +44,6 @@ export default function HomePage() {
           </div>
         </div>
       </section>
-
-      <CategoryShowcase />
-
-      <nav className="category-shortcuts" aria-label="Shop by category">
-        <ul>
-          {categories.map((c) => (
-            <li key={c.slug}>
-              <Link href={`/product-category/${c.slug}`}>{c.name}</Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
 
       <MenuBrowser categories={categories} productsByCategory={productsByCategory} />
     </>
