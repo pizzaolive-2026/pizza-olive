@@ -66,6 +66,16 @@ a {
   gap: 24px;
 }
 
+.site-header__logo {
+  flex-shrink: 0;
+}
+
+.site-header__logo img {
+  width: auto !important;
+  height: 60px !important;
+  object-fit: contain;
+}
+
 .site-header__nav ul {
   display: flex;
   gap: 28px;
@@ -82,6 +92,7 @@ a {
   display: flex;
   align-items: center;
   gap: 16px;
+  flex-shrink: 0;
 }
 
 .cart-button {
@@ -145,43 +156,106 @@ a {
   }
 }
 
-/* ---------- Hero & category shortcuts ---------- */
+/* ---------- Hero (full-bleed, Rubyx-style) ---------- */
 
 .hero {
+  position: relative;
+  min-height: 85vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  padding: 60px 20px;
-  background: var(--color-bg-cream);
+  overflow: hidden;
+}
+
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.hero__bg img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.hero__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 1;
+}
+
+.hero__content {
+  position: relative;
+  z-index: 2;
+  padding: 40px 20px;
+  max-width: 700px;
 }
 
 .hero h1 {
-  font-size: 2rem;
+  font-size: 3rem;
+  color: #fff;
+  line-height: 1.15;
+  margin-bottom: 0.3em;
 }
 
 .hero h2 {
   font-weight: 400;
-  color: var(--color-text-muted);
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1.3rem;
+  margin-bottom: 0.5em;
+}
+
+.hero__subtitle {
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 1.05rem;
+  margin: 0 0 2em;
 }
 
 .hero__actions {
   display: flex;
-  gap: 12px;
+  gap: 14px;
   justify-content: center;
-  margin-top: 20px;
   flex-wrap: wrap;
 }
 
 .hero__cta {
   background: var(--color-brand-red);
   color: #fff;
-  padding: 12px 24px;
+  padding: 14px 32px;
   border-radius: 999px;
-  min-height: 44px;
+  min-height: 48px;
   display: inline-flex;
   align-items: center;
+  border: none;
+  cursor: pointer;
+  font-size: 1.05rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  transition: transform 0.15s, box-shadow 0.15s;
+}
+
+.hero__cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
 }
 
 .hero__cta--secondary {
-  background: var(--color-brand-green);
+  background: transparent;
+  border: 2px solid #fff;
+  color: #fff;
+}
+
+.hero__cta--secondary:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+@media (max-width: 640px) {
+  .hero { min-height: 70vh; }
+  .hero h1 { font-size: 2rem; }
+  .hero h2 { font-size: 1.1rem; }
 }
 
 .category-shortcuts {
