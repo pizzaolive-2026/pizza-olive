@@ -10,6 +10,7 @@ export default function CheckoutPage() {
   const [fulfillment, setFulfillment] = useState<FulfillmentType>("pickup");
   const [address, setAddress] = useState("");
   const [deliveryQuote, setDeliveryQuote] = useState<{
+    quoteId: string;
     feeCents: number;
     estimateMinutes: number;
   } | null>(null);
@@ -53,6 +54,8 @@ export default function CheckoutPage() {
           })),
           fulfillment,
           address: fulfillment === "delivery" ? address : undefined,
+          uberQuoteId: fulfillment === "delivery" ? deliveryQuote?.quoteId : undefined,
+          deliveryFeeCents: fulfillment === "delivery" ? deliveryQuote?.feeCents : undefined,
         }),
       });
       if (!res.ok) throw new Error("Checkout could not be started.");

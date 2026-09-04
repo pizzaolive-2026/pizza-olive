@@ -74,6 +74,7 @@ export async function POST(req: NextRequest) {
     metadata: {
       fulfillment,
       address: fulfillment === "delivery" ? body.address ?? "" : "",
+      uberQuoteId: fulfillment === "delivery" ? body.uberQuoteId ?? "" : "",
     },
   });
 
