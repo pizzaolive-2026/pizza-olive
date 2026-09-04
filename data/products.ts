@@ -524,6 +524,14 @@ export function getProductsByCategory(categorySlug: string): Product[] {
   return products.filter((p) => p.categorySlug === categorySlug);
 }
 
+const CATEGORY_ORDER = ["pizza", "pasta", "panuozzo", "sides", "arancini", "beverages", "features"];
+
 export const categories = Array.from(
   new Map(products.map((p) => [p.categorySlug, p.category])).entries()
-).map(([slug, name]) => ({ slug, name }));
+)
+  .map(([slug, name]) => ({ slug, name }))
+  .sort((a, b) => {
+    const ai = CATEGORY_ORDER.indexOf(a.slug);
+    const bi = CATEGORY_ORDER.indexOf(b.slug);
+    return (ai === -1 ? 999 : ai) - (bi === -1 ? 999 : bi);
+  });
