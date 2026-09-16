@@ -21,8 +21,8 @@ export default function MenuBrowser({
   return (
     <div className="menu-browser">
       <div className="menu-header">
-        <p className="menu-header__eyebrow">today special</p>
-        <h2 className="menu-header__title">FESTIVE SEASON OFFERS</h2>
+        <p className="menu-header__eyebrow">Our Menu</p>
+        <h2 className="menu-header__title">PIZZA OLIVE</h2>
         <div className="menu-header__wave" aria-hidden="true">〰</div>
       </div>
 
