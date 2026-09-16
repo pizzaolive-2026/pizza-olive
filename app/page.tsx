@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { categories, getProductsByCategory } from "@/data/products";
 import MenuBrowser from "@/components/MenuBrowser";
 import GoogleReviews from "@/components/GoogleReviews";
+import PromoSection from "@/components/PromoSection";
 
 export const metadata: Metadata = {
   title: "Pizza Olive – Authentic Italian Pizza & Pasta",
@@ -47,6 +48,8 @@ export default function HomePage() {
       </section>
 
       <MenuBrowser categories={categories} productsByCategory={productsByCategory} />
+
+      <PromoSection />
 
       <GoogleReviews />
     </>
