@@ -812,8 +812,8 @@ a {
 
 .food-showcase {
   display: grid;
-  grid-template-columns: 3fr 2fr;
-  grid-template-rows: 300px 300px;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 280px 280px;
   gap: 4px;
 }
 
