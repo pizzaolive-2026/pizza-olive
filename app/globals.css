@@ -391,6 +391,38 @@ a {
 
 /* ---------- Category nav (mobile browsing fix) ---------- */
 
+/* ---------- Menu header (today special) ---------- */
+
+.menu-header {
+  text-align: center;
+  padding: 50px 20px 10px;
+}
+
+.menu-header__eyebrow {
+  font-family: "Georgia", serif;
+  font-style: italic;
+  color: var(--color-brand-red);
+  font-size: 1.4rem;
+  margin: 0 0 4px;
+}
+
+.menu-header__title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--color-text);
+  margin: 0;
+}
+
+.menu-header__wave {
+  color: var(--color-brand-red);
+  font-size: 1.5rem;
+  margin-top: 2px;
+  line-height: 1;
+}
+
+/* ---------- Category nav (centered underline tabs) ---------- */
+
 .category-nav {
   position: sticky;
   top: var(--header-height);
@@ -403,27 +435,35 @@ a {
 
 .category-nav ul {
   display: flex;
-  gap: 10px;
+  justify-content: center;
+  gap: 0;
   list-style: none;
   margin: 0;
-  padding: 12px 16px;
+  padding: 0;
   min-width: max-content;
 }
 
 .category-nav button {
-  border: 1px solid var(--color-border);
-  background: var(--color-bg-cream);
-  border-radius: 999px;
-  padding: 8px 16px;
-  font-size: 0.9rem;
+  border: none;
+  background: none;
+  padding: 14px 22px;
+  font-size: 0.95rem;
   white-space: nowrap;
   cursor: pointer;
+  color: var(--color-text-muted);
+  font-weight: 500;
+  border-bottom: 3px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.category-nav button:hover {
+  color: var(--color-text);
 }
 
 .category-nav button.is-active {
-  background: var(--color-brand-red);
-  color: #fff;
-  border-color: var(--color-brand-red);
+  color: var(--color-text);
+  border-bottom-color: var(--color-brand-red);
+  font-weight: 600;
 }
 
 /* ---------- Menu / product grid ----------
