@@ -811,14 +811,16 @@ a {
 /* ---------- Food Showcase Grid ---------- */
 
 .food-showcase {
-  width: 100%;
+  max-width: 1300px;
+  margin: 40px auto;
+  padding: 0 16px;
   display: grid;
   grid-template-columns: 3fr 1.5fr 2fr;
   grid-template-rows: 380px 300px;
   grid-template-areas:
     "pasta pasta arancini"
     "pizza1 pizza2 arancini";
-  gap: 4px;
+  gap: 20px;
 }
 
 .food-showcase__item {
