@@ -883,6 +883,13 @@ a {
   .site-footer__inner {
     grid-template-columns: 1fr 1fr;
   }
+  .site-footer__links {
+    text-align: right;
+  }
+  .site-footer__links ul {
+    list-style: none !important;
+    padding-left: 0 !important;
+  }
 }
 
 .site-footer__hours h3,
