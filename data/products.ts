@@ -330,7 +330,7 @@ export const products: Product[] = [
     salePriceCents: null,
     category: "Pasta",
     categorySlug: "pasta",
-    image: null,
+    image: "/images/italian-sausage-penne.png",
     featured: false,
     addonGroups: addonGroupsForProduct("pasta", "italian-sausage-penne"),
   },
