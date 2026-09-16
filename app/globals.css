@@ -808,17 +808,72 @@ a {
   color: var(--color-brand-red);
 }
 
-/* ---------- Footer ---------- */
+/* ---------- Footer (dark bg with image overlay, matching original) ---------- */
 
 .site-footer {
-  background: var(--color-bg-cream);
+  position: relative;
   margin-top: 60px;
-  padding: 40px 16px 20px;
+  padding: 0;
+  color: #fff;
+  overflow: hidden;
+}
+
+.site-footer__bg {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(rgba(0,0,0,0.82), rgba(0,0,0,0.88)),
+              url("https://aqua-seal-233446.hostingersite.com/wp-content/uploads/2026/07/Chicken-Bacon-Pizza.jpg") center/cover no-repeat;
+  z-index: 0;
+}
+
+.site-footer__contact-bar {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  gap: 60px;
+  padding: 50px 20px 40px;
+  flex-wrap: wrap;
+}
+
+.site-footer__contact-item {
+  text-align: center;
+}
+
+.site-footer__icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--color-brand-red);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 12px;
+}
+
+.site-footer__contact-item p {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.85);
+}
+
+.site-footer__contact-item a {
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+}
+
+.site-footer__contact-item a:hover {
+  color: #fff;
 }
 
 .site-footer__inner {
+  position: relative;
+  z-index: 1;
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0 20px 40px;
   display: grid;
   gap: 32px;
   grid-template-columns: 1fr;
@@ -826,19 +881,75 @@ a {
 
 @media (min-width: 900px) {
   .site-footer__inner {
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: 1fr 1fr;
   }
+}
+
+.site-footer__hours h3,
+.site-footer__links h3 {
+  color: #fff;
+  font-size: 1.1rem;
+  margin-bottom: 16px;
 }
 
 .site-footer__hours ul,
 .site-footer__links ul {
-  list-style: none;
-  padding: 0;
+  list-style: disc;
+  padding-left: 20px;
+  margin: 0;
+}
+
+.site-footer__hours li,
+.site-footer__links li {
+  padding: 3px 0;
+  font-size: 0.88rem;
+  color: rgba(255,255,255,0.75);
+}
+
+.site-footer__hours li strong {
+  color: #fff;
+  margin-right: 12px;
+  display: inline-block;
+  min-width: 100px;
+}
+
+.site-footer__links a {
+  color: rgba(255,255,255,0.75);
+  text-decoration: none;
+}
+
+.site-footer__links a:hover {
+  color: #fff;
+}
+
+.site-footer__payments {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 0 20px 30px;
+  flex-wrap: wrap;
+}
+
+.site-footer__pay-badge {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 4px;
+  padding: 6px 14px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: rgba(255,255,255,0.8);
+  letter-spacing: 0.03em;
 }
 
 .site-footer__copyright {
+  position: relative;
+  z-index: 1;
   text-align: center;
-  margin-top: 32px;
-  font-size: 0.85rem;
-  color: var(--color-text-muted);
+  padding: 16px 20px;
+  font-size: 0.82rem;
+  color: rgba(255,255,255,0.45);
+  border-top: 1px solid rgba(255,255,255,0.1);
+  margin: 0;
 }
