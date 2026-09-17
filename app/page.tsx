@@ -22,8 +22,8 @@ export default function HomePage() {
       <section className="hero">
         <div className="hero__bg">
           <Image
-            src="https://aqua-seal-233446.hostingersite.com/wp-content/uploads/2026/07/b2b48ee7-bf14-4230-8137-04d98a2d70dd.jpg"
-            alt="Pizza Olive — Authentic Italian Pizza"
+            src="/images/hero-pizza-pasta.png"
+            alt="Pizza Olive — Authentic Italian Pizza & Pasta"
             fill
             priority
             style={{ objectFit: "cover" }}
@@ -31,17 +31,16 @@ export default function HomePage() {
         </div>
         <div className="hero__overlay" />
         <div className="hero__content">
-          <h1>Authentic Italian Pizza &amp; Pasta</h1>
-          <h2>(647) 221-1145</h2>
+          <h1>Authentic Italian<br />Pizza &amp; Pasta</h1>
           <p className="hero__subtitle">
-            275 Dundas St W, Toronto &mdash; Handcrafted with love, delivered to your&nbsp;door.
+            Pizza Olive is Toronto&rsquo;s destination for handcrafted pizza, fresh pasta and Italian favourites &mdash; made with passion, delivered to your&nbsp;door.
           </p>
           <div className="hero__actions">
             <Link href="/shop-2" className="hero__cta">
               Order Now
             </Link>
-            <Link href="/shop-2" className="hero__cta hero__cta--secondary">
-              View Menu
+            <Link href="tel:+16472211145" className="hero__cta hero__cta--secondary">
+              Call Now
             </Link>
           </div>
         </div>
