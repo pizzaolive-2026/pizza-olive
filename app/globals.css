@@ -421,7 +421,75 @@ a {
   line-height: 1;
 }
 
-/* ---------- Category nav (centered underline tabs) ---------- */
+/* ---------- Desktop / Mobile toggle ---------- */
+
+.menu-desktop-only {
+  display: none;
+}
+
+.menu-mobile-only {
+  display: block;
+}
+
+@media (min-width: 900px) {
+  .menu-desktop-only {
+    display: block;
+  }
+  .menu-mobile-only {
+    display: none;
+  }
+}
+
+/* ---------- Desktop Tabs ---------- */
+
+.desktop-tabs__nav {
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 30px;
+}
+
+.desktop-tabs__nav ul {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.desktop-tabs__nav button {
+  border: none;
+  background: none;
+  padding: 14px 24px;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  cursor: pointer;
+  color: var(--color-text-muted);
+  font-weight: 500;
+  border-bottom: 3px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.desktop-tabs__nav button:hover {
+  color: var(--color-text);
+}
+
+.desktop-tabs__nav button.is-active {
+  color: var(--color-text);
+  border-bottom-color: var(--color-brand-red);
+  font-weight: 600;
+}
+
+.desktop-tabs__content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 16px 40px;
+}
+
+.product-grid--desktop {
+  grid-template-columns: repeat(4, 1fr) !important;
+}
+
+/* ---------- Category nav (centered underline tabs — mobile only) ---------- */
 
 .category-nav {
   position: sticky;
