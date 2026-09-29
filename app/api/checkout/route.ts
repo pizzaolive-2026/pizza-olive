@@ -23,6 +23,7 @@ interface CheckoutItem {
 }
 
 export async function POST(req: NextRequest) {
+  const origin = req.headers.get("origin") ?? req.headers.get("referer")?.replace(/\/[^/]*$/, "") ?? "https://pizza-olive-three.vercel.app";
   if (!process.env.STRIPE_SECRET_KEY) {
     return NextResponse.json(
       { error: "Stripe is not configured. Set STRIPE_SECRET_KEY." },
@@ -121,8 +122,8 @@ export async function POST(req: NextRequest) {
       mode: "payment",
       line_items: lineItems,
       automatic_tax: { enabled: false },
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://pizza-olive-three.vercel.app"}/order-confirmation?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://pizza-olive-three.vercel.app"}/checkout`,
+      success_url: `${origin}/order-confirmation?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${origin}/checkout`,
       metadata: {
         fulfillment,
         address: fulfillment === "delivery" ? body.address ?? "" : "",
