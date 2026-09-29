@@ -101,11 +101,26 @@ export async function POST(req: NextRequest) {
     });
   }
 
+  // Calculate 13% HST (Ontario) on food subtotal + delivery
+  const subtotalCents = lineItems.reduce(
+    (sum, li) => sum + (li.price_data?.unit_amount ?? 0) * (li.quantity ?? 1),
+    0
+  );
+  const hstCents = Math.round(subtotalCents * 0.13);
+  lineItems.push({
+    price_data: {
+      currency: "cad",
+      unit_amount: hstCents,
+      product_data: { name: "HST (13%)" },
+    },
+    quantity: 1,
+  });
+
   try {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       line_items: lineItems,
-      automatic_tax: { enabled: true },
+      automatic_tax: { enabled: false },
       success_url: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://pizza-olive-three.vercel.app"}/order-confirmation?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://pizza-olive-three.vercel.app"}/checkout`,
       metadata: {
