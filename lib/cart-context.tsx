@@ -16,8 +16,8 @@ interface CartContextValue {
   openCart: () => void;
   closeCart: () => void;
   addItem: (line: Omit<CartLine, "quantity">, quantity?: number) => void;
-  removeItem: (slug: string) => void;
-  updateQuantity: (slug: string, quantity: number) => void;
+  removeItem: (slug: string, index?: number) => void;
+  updateQuantity: (slug: string, quantity: number, index?: number) => void;
   itemCount: number;
   subtotalCents: number;
 }
@@ -30,10 +30,18 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   function addItem(line: Omit<CartLine, "quantity">, quantity = 1) {
     setLines((prev) => {
-      const existing = prev.find((l) => l.slug === line.slug);
+      // Match on slug + same addon selections + same price (so a pizza with
+      // extra bacon is a separate line from the same pizza with extra pepperoni)
+      const existing = prev.find(
+        (l) =>
+          l.slug === line.slug &&
+          l.unitPriceCents === line.unitPriceCents &&
+          JSON.stringify(l.selectedAddons ?? []) ===
+            JSON.stringify(line.selectedAddons ?? [])
+      );
       if (existing) {
         return prev.map((l) =>
-          l.slug === line.slug ? { ...l, quantity: l.quantity + quantity } : l
+          l === existing ? { ...l, quantity: l.quantity + quantity } : l
         );
       }
       return [...prev, { ...line, quantity }];
@@ -41,17 +49,30 @@ export function CartProvider({ children }: { children: ReactNode }) {
     setIsOpen(true);
   }
 
-  function removeItem(slug: string) {
-    setLines((prev) => prev.filter((l) => l.slug !== slug));
+  function removeItem(slug: string, index?: number) {
+    setLines((prev) => {
+      if (index !== undefined) {
+        return prev.filter((_, i) => i !== index);
+      }
+      // Legacy: remove first match by slug
+      const idx = prev.findIndex((l) => l.slug === slug);
+      if (idx === -1) return prev;
+      return [...prev.slice(0, idx), ...prev.slice(idx + 1)];
+    });
   }
 
-  function updateQuantity(slug: string, quantity: number) {
+  function updateQuantity(slug: string, quantity: number, index?: number) {
     if (quantity <= 0) {
-      removeItem(slug);
+      removeItem(slug, index);
       return;
     }
     setLines((prev) =>
-      prev.map((l) => (l.slug === slug ? { ...l, quantity } : l))
+      prev.map((l, i) => {
+        if (index !== undefined) {
+          return i === index ? { ...l, quantity } : l;
+        }
+        return l.slug === slug ? { ...l, quantity } : l;
+      })
     );
   }
 

@@ -26,8 +26,8 @@ export default function CartDrawer() {
         ) : (
           <>
             <ul className="cart-drawer__lines">
-              {lines.map((line) => (
-                <li key={line.slug}>
+              {lines.map((line, idx) => (
+                <li key={`${line.slug}-${idx}`}>
                   <span className="cart-drawer__line-name">
                     {line.name}
                     {line.selectedAddons && line.selectedAddons.length > 0 && (
@@ -39,7 +39,7 @@ export default function CartDrawer() {
                   <div className="cart-drawer__line-qty">
                     <button
                       type="button"
-                      onClick={() => updateQuantity(line.slug, line.quantity - 1)}
+                      onClick={() => updateQuantity(line.slug, line.quantity - 1, idx)}
                       aria-label={`Decrease quantity of ${line.name}`}
                     >
                       &minus;
@@ -47,7 +47,7 @@ export default function CartDrawer() {
                     <span>{line.quantity}</span>
                     <button
                       type="button"
-                      onClick={() => updateQuantity(line.slug, line.quantity + 1)}
+                      onClick={() => updateQuantity(line.slug, line.quantity + 1, idx)}
                       aria-label={`Increase quantity of ${line.name}`}
                     >
                       +
@@ -59,7 +59,7 @@ export default function CartDrawer() {
                   <button
                     type="button"
                     className="cart-drawer__line-remove"
-                    onClick={() => removeItem(line.slug)}
+                    onClick={() => removeItem(line.slug, idx)}
                     aria-label={`Remove ${line.name} from cart`}
                   >
                     Remove

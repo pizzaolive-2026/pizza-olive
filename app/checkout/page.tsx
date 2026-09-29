@@ -51,6 +51,7 @@ export default function CheckoutPage() {
             slug: l.slug,
             quantity: l.quantity,
             specialInstructions: l.specialInstructions,
+            selectedAddons: l.selectedAddons ?? [],
           })),
           fulfillment,
           address: fulfillment === "delivery" ? address : undefined,
