@@ -105,8 +105,8 @@ export async function POST(req: NextRequest) {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       line_items: lineItems,
-      success_url: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://pizza-olive.vercel.app"}/order-confirmation?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://pizza-olive.vercel.app"}/checkout`,
+      success_url: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://pizza-olive-three.vercel.app"}/order-confirmation?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://pizza-olive-three.vercel.app"}/checkout`,
       metadata: {
         fulfillment,
         address: fulfillment === "delivery" ? body.address ?? "" : "",

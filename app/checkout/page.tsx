@@ -59,9 +59,10 @@ export default function CheckoutPage() {
           deliveryFeeCents: fulfillment === "delivery" ? deliveryQuote?.feeCents : undefined,
         }),
       });
-      if (!res.ok) throw new Error("Checkout could not be started.");
       const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "Checkout could not be started.");
       if (data.url) window.location.href = data.url;
+      else throw new Error("No redirect URL from Stripe.");
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong.");
     } finally {
