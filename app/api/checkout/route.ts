@@ -101,16 +101,13 @@ export async function POST(req: NextRequest) {
     });
   }
 
-  const siteUrl = "https://pizza-olive-three.vercel.app";
-  const successUrl = siteUrl + "/order-confirmation?session_id={CHECKOUT_SESSION_ID}";
-  const cancelUrl = siteUrl + "/checkout";
-
   try {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
       line_items: lineItems,
-      success_url: successUrl,
-      cancel_url: cancelUrl,
+      automatic_tax: { enabled: true },
+      success_url: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://pizza-olive-three.vercel.app"}/order-confirmation?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_SITE_URL ?? "https://pizza-olive-three.vercel.app"}/checkout`,
       metadata: {
         fulfillment,
         address: fulfillment === "delivery" ? body.address ?? "" : "",
