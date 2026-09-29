@@ -23,7 +23,10 @@ interface CheckoutItem {
 }
 
 export async function POST(req: NextRequest) {
-  const origin = req.headers.get("origin") ?? req.headers.get("referer")?.replace(/\/[^/]*$/, "") ?? "https://pizza-olive-three.vercel.app";
+  const rawOrigin = req.headers.get("origin");
+  const rawReferer = req.headers.get("referer");
+  const refererOrigin = rawReferer ? new URL(rawReferer).origin : null;
+  const origin = rawOrigin ?? refererOrigin ?? "https://pizza-olive-three.vercel.app";
   if (!process.env.STRIPE_SECRET_KEY) {
     return NextResponse.json(
       { error: "Stripe is not configured. Set STRIPE_SECRET_KEY." },
