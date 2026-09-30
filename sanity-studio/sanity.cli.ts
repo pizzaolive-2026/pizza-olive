@@ -5,4 +5,5 @@ export default defineCliConfig({
     projectId: "p1weztyq",
     dataset: "production",
   },
+  studioHost: "pizza-olive",
 });
