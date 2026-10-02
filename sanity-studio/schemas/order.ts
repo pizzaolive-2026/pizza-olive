@@ -52,6 +52,16 @@ export default defineType({
       type: "string",
     }),
     defineField({
+      name: "uberDeliveryId",
+      title: "Uber Delivery ID",
+      type: "string",
+    }),
+    defineField({
+      name: "uberTrackingUrl",
+      title: "Uber Tracking URL",
+      type: "string",
+    }),
+    defineField({
       name: "items",
       title: "Items",
       type: "array",

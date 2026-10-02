@@ -16,6 +16,8 @@ interface Order {
   fulfillment: string;
   deliveryAddress?: string;
   uberQuoteId?: string;
+  uberDeliveryId?: string;
+  uberTrackingUrl?: string;
   customerName?: string;
   customerEmail?: string;
   items: OrderItem[];
@@ -115,14 +117,30 @@ export default function OrdersDashboard() {
   }, []);
 
   async function updateStatus(orderId: string, status: string) {
-    await fetch("/api/orders", {
+    const res = await fetch("/api/orders", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ orderId, status }),
     });
+    const data = await res.json();
     setOrders((prev) =>
-      prev.map((o) => (o._id === orderId ? { ...o, status } : o))
+      prev.map((o) =>
+        o._id === orderId
+          ? {
+              ...o,
+              status,
+              ...(data.uberDeliveryId ? { uberDeliveryId: data.uberDeliveryId } : {}),
+              ...(data.uberTrackingUrl ? { uberTrackingUrl: data.uberTrackingUrl } : {}),
+            }
+          : o
+      )
     );
+    if (data.uberDispatched) {
+      alert(`🚗 Uber driver dispatched! Tracking: ${data.uberTrackingUrl ?? "check Uber dashboard"}`);
+    }
+    if (data.uberError) {
+      alert(`⚠️ Order marked ready but Uber dispatch failed: ${data.uberError}`);
+    }
   }
 
   const filtered = filter === "all" ? orders : orders.filter((o) => o.status === filter);
@@ -219,9 +237,18 @@ export default function OrdersDashboard() {
               {order.deliveryAddress && (
                 <div style={{ color: "#374151", fontSize: "0.9rem" }}>📍 {order.deliveryAddress}</div>
               )}
-              {order.uberQuoteId && (
+              {order.uberQuoteId && !order.uberDeliveryId && (
                 <div style={{ color: "#6b7280", fontSize: "0.85rem", marginTop: "0.2rem" }}>
                   🚗 Uber Quote: <span style={{ fontFamily: "monospace" }}>{order.uberQuoteId}</span>
+                </div>
+              )}
+              {order.uberDeliveryId && (
+                <div style={{ color: "#16a34a", fontSize: "0.85rem", marginTop: "0.2rem", fontWeight: 600 }}>
+                  🚗 Driver dispatched!
+                  {order.uberTrackingUrl && (
+                    <> · <a href={order.uberTrackingUrl} target="_blank" rel="noopener noreferrer"
+                      style={{ color: "#1d4ed8" }}>Track delivery</a></>
+                  )}
                 </div>
               )}
 
