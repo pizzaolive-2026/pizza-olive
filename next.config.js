@@ -6,6 +6,10 @@ const nextConfig = {
         protocol: "https",
         hostname: "aqua-seal-233446.hostingersite.com",
       },
+      {
+        protocol: "https",
+        hostname: "cdn.sanity.io",
+      },
     ],
   },
 };
