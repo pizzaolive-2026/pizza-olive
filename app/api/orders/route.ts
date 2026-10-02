@@ -42,7 +42,7 @@ export async function PATCH(req: NextRequest) {
           pickupPhone: "+14165550100",
           dropoffAddress: order.deliveryAddress ?? "",
           dropoffName: order.customerName ?? "Customer",
-          dropoffPhone: "+14165550000", // Uber requires a phone; use placeholder if not collected
+          dropoffPhone: "+14165559999", // fallback — replace with your restaurant number
           orderDescription: "Pizza order",
         });
 
