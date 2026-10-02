@@ -104,7 +104,16 @@ export async function getAllProducts(): Promise<Product[]> {
   const docs: SanityProduct[] = await sanityClient.fetch(
     `*[_type == "product"] | order(category->order asc, name asc) { ${PRODUCT_FIELDS} }`
   );
-  return docs.map(mapProduct);
+  // Deduplicate by slug — keep the one with an image if there are two
+  const seen = new Map<string, SanityProduct>();
+  for (const doc of docs) {
+    const slug = doc.slug.current;
+    const existing = seen.get(slug);
+    if (!existing || (!existing.imageFromAsset && doc.imageFromAsset)) {
+      seen.set(slug, doc);
+    }
+  }
+  return Array.from(seen.values()).map(mapProduct);
 }
 
 export async function getProductBySlugFromSanity(slug: string): Promise<Product | undefined> {
@@ -120,7 +129,15 @@ export async function getProductsByCategoryFromSanity(categorySlug: string): Pro
     `*[_type == "product" && category->slug.current == $categorySlug] | order(name asc) { ${PRODUCT_FIELDS} }`,
     { categorySlug }
   );
-  return docs.map(mapProduct);
+  const seen = new Map<string, SanityProduct>();
+  for (const doc of docs) {
+    const slug = doc.slug.current;
+    const existing = seen.get(slug);
+    if (!existing || (!existing.imageFromAsset && doc.imageFromAsset)) {
+      seen.set(slug, doc);
+    }
+  }
+  return Array.from(seen.values()).map(mapProduct);
 }
 
 export async function getCategoriesFromSanity(): Promise<{ name: string; slug: string }[]> {
