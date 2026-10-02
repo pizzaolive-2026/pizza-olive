@@ -1,5 +1,16 @@
 import { sanityClient } from "./sanity";
+import imageUrlBuilder from "@sanity/image-url";
 import type { Product, AddonGroup } from "@/types/product";
+
+const builder = imageUrlBuilder(sanityClient);
+function sanityImageUrl(source: unknown): string | null {
+  if (!source) return null;
+  try {
+    return builder.image(source as Parameters<typeof builder.image>[0]).auto("format").url();
+  } catch {
+    return null;
+  }
+}
 
 // ─── Sanity document shapes ───────────────────────────────────────────────────
 
@@ -27,6 +38,7 @@ interface SanityProduct {
   priceCents: number;
   salePriceCents?: number;
   imageUrl?: string;
+  image?: { asset: { _ref: string } };
   featured: boolean;
   addonGroups?: SanityAddonGroup[];
   category: {
@@ -55,6 +67,7 @@ const PRODUCT_FIELDS = `
   priceCents,
   salePriceCents,
   imageUrl,
+  image { asset->{ _id, url } },
   featured,
   addonGroups[] {
     _key,
@@ -80,7 +93,7 @@ function mapProduct(p: SanityProduct): Product {
     salePriceCents: p.salePriceCents ?? null,
     category: p.category?.name ?? "",
     categorySlug: p.category?.slug?.current ?? "",
-    image: p.imageUrl ?? null,
+    image: sanityImageUrl(p.image) ?? p.imageUrl ?? null,
     featured: p.featured ?? false,
     addonGroups: (p.addonGroups ?? []).map(
       (g): AddonGroup => ({
