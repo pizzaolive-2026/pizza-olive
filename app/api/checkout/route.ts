@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { getProductBySlug } from "@/data/products";
+import { getProductBySlugFromSanity } from "@/lib/sanity-queries";
 import { sumCents } from "@/lib/money";
 
 // STRIPE_SECRET_KEY must only ever be read here, server-side. Never send it
@@ -49,7 +49,7 @@ export async function POST(req: NextRequest) {
   const lineItems: Stripe.Checkout.SessionCreateParams.LineItem[] = [];
 
   for (const item of items) {
-    const product = getProductBySlug(item.slug);
+    const product = await getProductBySlugFromSanity(item.slug);
     if (!product) {
       return NextResponse.json(
         { error: `Unknown product: ${item.slug}` },

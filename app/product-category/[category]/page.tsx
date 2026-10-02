@@ -1,27 +1,30 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
-import { categories, getProductsByCategory } from "@/data/products";
+import { getCategoriesFromSanity, getProductsByCategoryFromSanity } from "@/lib/sanity-queries";
 import ProductCard from "@/components/ProductCard";
 
 // URL pattern preserved exactly: /product-category/{slug}/
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const categories = await getCategoriesFromSanity();
   return categories.map((c) => ({ category: c.slug }));
 }
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
   params: { category: string };
-}): Metadata {
+}): Promise<Metadata> {
+  const categories = await getCategoriesFromSanity();
   const category = categories.find((c) => c.slug === params.category);
   return { title: category ? `${category.name} – Pizza Olive` : "Pizza Olive" };
 }
 
-export default function CategoryPage({ params }: { params: { category: string } }) {
+export default async function CategoryPage({ params }: { params: { category: string } }) {
+  const categories = await getCategoriesFromSanity();
   const category = categories.find((c) => c.slug === params.category);
   if (!category) notFound();
 
-  const products = getProductsByCategory(category.slug);
+  const products = await getProductsByCategoryFromSanity(category.slug);
 
   return (
     <section className="menu-section">

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
-import { categories, getProductsByCategory } from "@/data/products";
+import { getAllProductsGrouped } from "@/lib/sanity-queries";
 import MenuBrowser from "@/components/MenuBrowser";
 import GoogleReviews from "@/components/GoogleReviews";
 import PromoSection from "@/components/PromoSection";
@@ -12,10 +12,8 @@ export const metadata: Metadata = {
     "Order authentic Italian pizza, pasta and more from Pizza Olive, 275 Dundas St W, Toronto. (647) 221-1145.",
 };
 
-export default function HomePage() {
-  const productsByCategory = Object.fromEntries(
-    categories.map((c) => [c.slug, getProductsByCategory(c.slug)])
-  );
+export default async function HomePage() {
+  const { categories, productsByCategory } = await getAllProductsGrouped();
 
   return (
     <>

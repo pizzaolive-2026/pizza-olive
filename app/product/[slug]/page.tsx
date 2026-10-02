@@ -1,25 +1,26 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Image from "next/image";
-import { products, getProductBySlug } from "@/data/products";
+import { getAllProducts, getProductBySlugFromSanity } from "@/lib/sanity-queries";
 import { formatCents } from "@/lib/money";
 import AddToCartForm from "@/components/AddToCartForm";
 
 // URL pattern preserved exactly: /product/{slug}/
-export function generateStaticParams() {
+export async function generateStaticParams() {
+  const products = await getAllProducts();
   return products.map((p) => ({ slug: p.slug }));
 }
 
-export function generateMetadata({ params }: { params: { slug: string } }): Metadata {
-  const product = getProductBySlug(params.slug);
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  const product = await getProductBySlugFromSanity(params.slug);
   return {
     title: product ? `${product.name} – Pizza Olive` : "Pizza Olive",
     description: product?.shortDescription || product?.description,
   };
 }
 
-export default function ProductPage({ params }: { params: { slug: string } }) {
-  const product = getProductBySlug(params.slug);
+export default async function ProductPage({ params }: { params: { slug: string } }) {
+  const product = await getProductBySlugFromSanity(params.slug);
   if (!product) notFound();
 
   return (
@@ -32,6 +33,7 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
             width={700}
             height={560}
             priority
+            unoptimized
           />
         ) : (
           <div className="product-card__image--placeholder" aria-hidden />
@@ -55,8 +57,12 @@ export default function ProductPage({ params }: { params: { slug: string } }) {
           )}
         </p>
 
-        {product.shortDescription && <p>{product.shortDescription}</p>}
-        {product.description && <p>{product.description}</p>}
+        {product.shortDescription && (
+          <p className="product-detail__short-desc">{product.shortDescription}</p>
+        )}
+        {product.description && (
+          <p className="product-detail__desc">{product.description}</p>
+        )}
 
         <AddToCartForm product={product} />
       </div>
