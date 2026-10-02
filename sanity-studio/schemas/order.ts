@@ -47,6 +47,11 @@ export default defineType({
       type: "string",
     }),
     defineField({
+      name: "uberQuoteId",
+      title: "Uber Quote ID",
+      type: "string",
+    }),
+    defineField({
       name: "items",
       title: "Items",
       type: "array",

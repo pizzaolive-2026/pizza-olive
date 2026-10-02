@@ -12,7 +12,7 @@ const sanityWriteClient = createClient({
 export async function GET() {
   const orders = await sanityWriteClient.fetch(
     `*[_type == "order"] | order(createdAt desc)[0...50] {
-      _id, orderNumber, status, fulfillment, deliveryAddress,
+      _id, orderNumber, status, fulfillment, deliveryAddress, uberQuoteId,
       customerName, customerEmail, items, totalCents, createdAt
     }`
   );

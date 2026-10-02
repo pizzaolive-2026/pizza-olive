@@ -59,6 +59,7 @@ export async function POST(req: NextRequest) {
       status: "new",
       fulfillment: session.metadata?.fulfillment ?? "pickup",
       deliveryAddress: session.metadata?.address ?? "",
+      uberQuoteId: session.metadata?.uberQuoteId ?? "",
       customerEmail: session.customer_details?.email ?? "",
       customerName: session.customer_details?.name ?? "",
       items,

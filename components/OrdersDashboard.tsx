@@ -15,6 +15,7 @@ interface Order {
   status: string;
   fulfillment: string;
   deliveryAddress?: string;
+  uberQuoteId?: string;
   customerName?: string;
   customerEmail?: string;
   items: OrderItem[];
@@ -197,7 +198,7 @@ export default function OrdersDashboard() {
                     color: order.fulfillment === "delivery" ? "#1d4ed8" : "#92400e",
                     borderRadius: "999px", fontSize: "0.85rem", fontWeight: 600,
                   }}>
-                    {order.fulfillment === "delivery" ? "🚗 Delivery" : "🏪 Pickup"}
+                    {order.fulfillment === "delivery" ? "🚗 Uber Delivery" : "🏪 Pickup"}
                   </span>
                 </div>
                 <div style={{ textAlign: "right" }}>
@@ -217,6 +218,11 @@ export default function OrdersDashboard() {
               )}
               {order.deliveryAddress && (
                 <div style={{ color: "#374151", fontSize: "0.9rem" }}>📍 {order.deliveryAddress}</div>
+              )}
+              {order.uberQuoteId && (
+                <div style={{ color: "#6b7280", fontSize: "0.85rem", marginTop: "0.2rem" }}>
+                  🚗 Uber Quote: <span style={{ fontFamily: "monospace" }}>{order.uberQuoteId}</span>
+                </div>
               )}
 
               <div style={{ marginTop: "0.75rem", borderTop: "1px solid #f3f4f6", paddingTop: "0.75rem" }}>
