@@ -6,6 +6,8 @@ import { formatCents } from "@/lib/money";
 import AddToCartForm from "@/components/AddToCartForm";
 
 // URL pattern preserved exactly: /product/{slug}/
+export const revalidate = 0; // always fetch fresh from Sanity
+
 export async function generateStaticParams() {
   const products = await getAllProducts();
   return products.map((p) => ({ slug: p.slug }));

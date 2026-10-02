@@ -6,6 +6,8 @@ import MenuBrowser from "@/components/MenuBrowser";
 import GoogleReviews from "@/components/GoogleReviews";
 import PromoSection from "@/components/PromoSection";
 
+export const revalidate = 0; // always fetch fresh from Sanity
+
 export const metadata: Metadata = {
   title: "Pizza Olive – Authentic Italian Pizza & Pasta",
   description:

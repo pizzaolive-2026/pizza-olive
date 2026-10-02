@@ -4,6 +4,8 @@ import { getCategoriesFromSanity, getProductsByCategoryFromSanity } from "@/lib/
 import ProductCard from "@/components/ProductCard";
 
 // URL pattern preserved exactly: /product-category/{slug}/
+export const revalidate = 0; // always fetch fresh from Sanity
+
 export async function generateStaticParams() {
   const categories = await getCategoriesFromSanity();
   return categories.map((c) => ({ category: c.slug }));
