@@ -42,7 +42,7 @@ export async function PATCH(req: NextRequest) {
           pickupPhone: "+14165550100",
           dropoffAddress: order.deliveryAddress ?? "",
           dropoffName: order.customerName ?? "Customer",
-          dropoffPhone: "+14165559999", // fallback — replace with your restaurant number
+          dropoffPhone: "+16472211145", // Pizza Olive restaurant phone as fallback
           orderDescription: "Pizza order",
         });
 
