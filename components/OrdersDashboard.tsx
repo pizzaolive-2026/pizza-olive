@@ -63,13 +63,23 @@ function playAlertSound() {
   }
 }
 
+const STAFF_PIN = "1145"; // last 4 of restaurant phone
+
 export default function OrdersDashboard() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [newOrderAlert, setNewOrderAlert] = useState<Order | null>(null);
   const [filter, setFilter] = useState<string>("all");
+  const [pin, setPin] = useState("");
+  const [unlocked, setUnlocked] = useState(false);
+  const [pinError, setPinError] = useState(false);
   const knownIds = useRef<Set<string>>(new Set());
   const isFirstLoad = useRef(true);
+
+  // Check session storage for existing unlock
+  useEffect(() => {
+    if (sessionStorage.getItem("orders_unlocked") === "1") setUnlocked(true);
+  }, []);
 
   const fetchOrders = useCallback(async () => {
     try {
@@ -145,34 +155,71 @@ export default function OrdersDashboard() {
 
   const filtered = filter === "all" ? orders : orders.filter((o) => o.status === filter);
 
+  // PIN lock screen
+  if (!unlocked) {
+    return (
+      <div style={{ minHeight: "100vh", background: "#f9fafb", display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem" }}>
+        <div style={{ background: "white", borderRadius: "16px", padding: "2rem", boxShadow: "0 4px 20px rgba(0,0,0,0.1)", width: "100%", maxWidth: 320, textAlign: "center" }}>
+          <div style={{ fontSize: "3rem", marginBottom: "0.5rem" }}>🍕</div>
+          <h2 style={{ fontWeight: 800, fontSize: "1.3rem", marginBottom: "0.25rem" }}>Staff Access</h2>
+          <p style={{ color: "#6b7280", fontSize: "0.9rem", marginBottom: "1.5rem" }}>Enter PIN to view orders</p>
+          <input
+            type="password" inputMode="numeric" maxLength={4}
+            value={pin} onChange={e => { setPin(e.target.value); setPinError(false); }}
+            onKeyDown={e => {
+              if (e.key === "Enter") {
+                if (pin === STAFF_PIN) { sessionStorage.setItem("orders_unlocked", "1"); setUnlocked(true); }
+                else { setPinError(true); setPin(""); }
+              }
+            }}
+            placeholder="••••"
+            style={{ width: "100%", padding: "0.75rem", fontSize: "1.5rem", textAlign: "center", letterSpacing: "0.5rem", border: `2px solid ${pinError ? "#dc2626" : "#e5e7eb"}`, borderRadius: "10px", outline: "none", boxSizing: "border-box" }}
+            autoFocus
+          />
+          {pinError && <p style={{ color: "#dc2626", fontSize: "0.85rem", marginTop: "0.5rem" }}>Incorrect PIN</p>}
+          <button
+            onClick={() => {
+              if (pin === STAFF_PIN) { sessionStorage.setItem("orders_unlocked", "1"); setUnlocked(true); }
+              else { setPinError(true); setPin(""); }
+            }}
+            style={{ marginTop: "1rem", width: "100%", padding: "0.75rem", background: "#dc2626", color: "white", border: "none", borderRadius: "10px", fontWeight: 700, fontSize: "1rem", cursor: "pointer" }}>
+            Unlock
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div style={{ minHeight: "100vh", background: "#f9fafb", padding: "2rem" }}>
+    <div style={{ minHeight: "100vh", background: "#f9fafb", padding: "1rem" }}>
       {/* Alert banner */}
       {newOrderAlert && (
         <div style={{
-          position: "fixed", top: 20, left: "50%", transform: "translateX(-50%)",
-          background: "#dc2626", color: "white", padding: "1rem 2rem",
-          borderRadius: "12px", zIndex: 9999, fontWeight: 700, fontSize: "1.2rem",
+          position: "fixed", top: 12, left: "1rem", right: "1rem",
+          background: "#dc2626", color: "white", padding: "0.85rem 1.25rem",
+          borderRadius: "12px", zIndex: 9999, fontWeight: 700, fontSize: "1rem",
           boxShadow: "0 4px 20px rgba(0,0,0,0.3)", animation: "pulse 1s infinite",
+          textAlign: "center",
         }}>
           🍕 NEW ORDER! — {newOrderAlert.orderNumber} — {formatCents(newOrderAlert.totalCents)}
         </div>
       )}
 
       <div style={{ maxWidth: 900, margin: "0 auto" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.5rem" }}>
-          <h1 style={{ fontSize: "1.8rem", fontWeight: 800, color: "#111" }}>🍕 Orders</h1>
-          <span style={{ color: "#6b7280", fontSize: "0.9rem" }}>Auto-refreshes every 15s</span>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem", flexWrap: "wrap", gap: "0.25rem" }}>
+          <h1 style={{ fontSize: "1.5rem", fontWeight: 800, color: "#111" }}>🍕 Orders</h1>
+          <span style={{ color: "#6b7280", fontSize: "0.8rem" }}>Auto-refreshes every 15s</span>
         </div>
 
         {/* Filter tabs */}
-        <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.5rem", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: "0.4rem", marginBottom: "1rem", flexWrap: "wrap" }}>
           {["all", "new", "preparing", "ready", "completed"].map((s) => (
             <button key={s} onClick={() => setFilter(s)} style={{
-              padding: "0.4rem 1rem", borderRadius: "999px", border: "none",
+              padding: "0.35rem 0.75rem", borderRadius: "999px", border: "none",
               background: filter === s ? "#dc2626" : "#e5e7eb",
               color: filter === s ? "white" : "#374151",
               fontWeight: 600, cursor: "pointer", textTransform: "capitalize",
+              fontSize: "0.85rem",
             }}>
               {s === "all" ? "All" : STATUS_LABELS[s]}
               {s !== "all" && (
@@ -195,38 +242,40 @@ export default function OrdersDashboard() {
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
           {filtered.map((order) => (
             <div key={order._id} style={{
-              background: "white", borderRadius: "12px", padding: "1.5rem",
+              background: "white", borderRadius: "12px", padding: "1rem",
               boxShadow: "0 1px 4px rgba(0,0,0,0.08)",
               borderLeft: `4px solid ${STATUS_COLORS[order.status] ?? "#e5e7eb"}`,
             }}>
-              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "0.5rem" }}>
-                <div>
-                  <span style={{ fontWeight: 800, fontSize: "1.1rem" }}>{order.orderNumber}</span>
-                  <span style={{
-                    marginLeft: "0.75rem", padding: "0.2rem 0.75rem",
-                    background: STATUS_COLORS[order.status] + "22",
-                    color: STATUS_COLORS[order.status],
-                    borderRadius: "999px", fontSize: "0.85rem", fontWeight: 600,
-                  }}>
-                    {STATUS_LABELS[order.status] ?? order.status}
-                  </span>
-                  <span style={{
-                    marginLeft: "0.5rem", padding: "0.2rem 0.75rem",
-                    background: order.fulfillment === "delivery" ? "#dbeafe" : "#fef3c7",
-                    color: order.fulfillment === "delivery" ? "#1d4ed8" : "#92400e",
-                    borderRadius: "999px", fontSize: "0.85rem", fontWeight: 600,
-                  }}>
-                    {order.fulfillment === "delivery" ? "🚗 Uber Delivery" : "🏪 Pickup"}
-                  </span>
-                </div>
-                <div style={{ textAlign: "right" }}>
-                  <div style={{ fontWeight: 800, fontSize: "1.2rem", color: "#dc2626" }}>
+              {/* Top row: order number + price */}
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.5rem", marginBottom: "0.4rem" }}>
+                <span style={{ fontWeight: 800, fontSize: "1.05rem" }}>{order.orderNumber}</span>
+                <div style={{ textAlign: "right", flexShrink: 0 }}>
+                  <div style={{ fontWeight: 800, fontSize: "1.1rem", color: "#dc2626" }}>
                     {formatCents(order.totalCents)}
                   </div>
-                  <div style={{ color: "#9ca3af", fontSize: "0.8rem" }}>
-                    {new Date(order.createdAt).toLocaleString()}
+                  <div style={{ color: "#9ca3af", fontSize: "0.75rem" }}>
+                    {new Date(order.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                   </div>
                 </div>
+              </div>
+              {/* Status badges */}
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem", marginBottom: "0.4rem" }}>
+                <span style={{
+                  padding: "0.2rem 0.6rem",
+                  background: STATUS_COLORS[order.status] + "22",
+                  color: STATUS_COLORS[order.status],
+                  borderRadius: "999px", fontSize: "0.8rem", fontWeight: 600,
+                }}>
+                  {STATUS_LABELS[order.status] ?? order.status}
+                </span>
+                <span style={{
+                  padding: "0.2rem 0.6rem",
+                  background: order.fulfillment === "delivery" ? "#dbeafe" : "#fef3c7",
+                  color: order.fulfillment === "delivery" ? "#1d4ed8" : "#92400e",
+                  borderRadius: "999px", fontSize: "0.8rem", fontWeight: 600,
+                }}>
+                  {order.fulfillment === "delivery" ? "🚗 Delivery" : "🏪 Pickup"}
+                </span>
               </div>
 
               {order.customerName && (
@@ -263,27 +312,27 @@ export default function OrdersDashboard() {
 
               {/* Status actions */}
               {order.status !== "completed" && order.status !== "cancelled" && (
-                <div style={{ marginTop: "1rem", display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                <div style={{ marginTop: "0.75rem", display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
                   {order.status === "new" && (
                     <button onClick={() => updateStatus(order._id, "preparing")}
-                      style={{ padding: "0.4rem 1rem", background: "#d97706", color: "white", border: "none", borderRadius: "8px", fontWeight: 600, cursor: "pointer" }}>
+                      style={{ flex: 1, minWidth: 130, padding: "0.6rem 1rem", background: "#d97706", color: "white", border: "none", borderRadius: "8px", fontWeight: 700, cursor: "pointer", fontSize: "0.95rem" }}>
                       👨‍🍳 Start Preparing
                     </button>
                   )}
                   {order.status === "preparing" && (
                     <button onClick={() => updateStatus(order._id, "ready")}
-                      style={{ padding: "0.4rem 1rem", background: "#16a34a", color: "white", border: "none", borderRadius: "8px", fontWeight: 600, cursor: "pointer" }}>
+                      style={{ flex: 1, minWidth: 130, padding: "0.6rem 1rem", background: "#16a34a", color: "white", border: "none", borderRadius: "8px", fontWeight: 700, cursor: "pointer", fontSize: "0.95rem" }}>
                       ✅ Mark Ready
                     </button>
                   )}
                   {order.status === "ready" && (
                     <button onClick={() => updateStatus(order._id, "completed")}
-                      style={{ padding: "0.4rem 1rem", background: "#6b7280", color: "white", border: "none", borderRadius: "8px", fontWeight: 600, cursor: "pointer" }}>
+                      style={{ flex: 1, minWidth: 130, padding: "0.6rem 1rem", background: "#6b7280", color: "white", border: "none", borderRadius: "8px", fontWeight: 700, cursor: "pointer", fontSize: "0.95rem" }}>
                       📦 Complete
                     </button>
                   )}
                   <button onClick={() => updateStatus(order._id, "cancelled")}
-                    style={{ padding: "0.4rem 1rem", background: "#fee2e2", color: "#dc2626", border: "none", borderRadius: "8px", fontWeight: 600, cursor: "pointer" }}>
+                    style={{ padding: "0.6rem 1rem", background: "#fee2e2", color: "#dc2626", border: "none", borderRadius: "8px", fontWeight: 700, cursor: "pointer", fontSize: "0.95rem" }}>
                     Cancel
                   </button>
                 </div>
