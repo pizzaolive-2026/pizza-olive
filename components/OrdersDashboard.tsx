@@ -78,7 +78,11 @@ export default function OrdersDashboard() {
 
   // Check session storage for existing unlock
   useEffect(() => {
-    if (sessionStorage.getItem("orders_unlocked") === "1") setUnlocked(true);
+    try {
+      if (sessionStorage.getItem("orders_unlocked") === "1") setUnlocked(true);
+    } catch {
+      // sessionStorage unavailable (private mode etc.) — stay locked
+    }
   }, []);
 
   const fetchOrders = useCallback(async () => {
@@ -94,11 +98,15 @@ export default function OrdersDashboard() {
           playAlertSound();
           setNewOrderAlert(newOrders[0]);
           // Browser notification
-          if (Notification.permission === "granted") {
-            new Notification("🍕 New Order!", {
-              body: `Order ${newOrders[0].orderNumber} — ${formatCents(newOrders[0].totalCents)}`,
-              icon: "/images/logo.png",
-            });
+          try {
+            if (typeof Notification !== "undefined" && Notification.permission === "granted") {
+              new Notification("🍕 New Order!", {
+                body: `Order ${newOrders[0].orderNumber} — ${formatCents(newOrders[0].totalCents)}`,
+                icon: "/images/logo.png",
+              });
+            }
+          } catch {
+            // Notifications not supported
           }
           setTimeout(() => setNewOrderAlert(null), 8000);
         }
@@ -121,8 +129,12 @@ export default function OrdersDashboard() {
   }, [fetchOrders]);
 
   useEffect(() => {
-    if (Notification.permission === "default") {
-      Notification.requestPermission();
+    try {
+      if (typeof Notification !== "undefined" && Notification.permission === "default") {
+        Notification.requestPermission();
+      }
+    } catch {
+      // Notifications not supported (iOS Safari)
     }
   }, []);
 
@@ -168,7 +180,7 @@ export default function OrdersDashboard() {
             value={pin} onChange={e => { setPin(e.target.value); setPinError(false); }}
             onKeyDown={e => {
               if (e.key === "Enter") {
-                if (pin === STAFF_PIN) { sessionStorage.setItem("orders_unlocked", "1"); setUnlocked(true); }
+                if (pin === STAFF_PIN) { try { sessionStorage.setItem("orders_unlocked", "1"); } catch {} setUnlocked(true); }
                 else { setPinError(true); setPin(""); }
               }
             }}
@@ -179,7 +191,7 @@ export default function OrdersDashboard() {
           {pinError && <p style={{ color: "#dc2626", fontSize: "0.85rem", marginTop: "0.5rem" }}>Incorrect PIN</p>}
           <button
             onClick={() => {
-              if (pin === STAFF_PIN) { sessionStorage.setItem("orders_unlocked", "1"); setUnlocked(true); }
+              if (pin === STAFF_PIN) { try { sessionStorage.setItem("orders_unlocked", "1"); } catch {} setUnlocked(true); }
               else { setPinError(true); setPin(""); }
             }}
             style={{ marginTop: "1rem", width: "100%", padding: "0.75rem", background: "#dc2626", color: "white", border: "none", borderRadius: "10px", fontWeight: 700, fontSize: "1rem", cursor: "pointer" }}>
